@@ -89,7 +89,6 @@ return [
             'database' => env('SQLSERVER_DATABASE', 'forge'),
             'username' => env('SQLSERVER_USERNAME', 'forge'),
             'password' => env('SQLSERVER_PASSWORD', ''),
-            'charset' => 'utf8',
             'prefix' => '',
         ],
 
