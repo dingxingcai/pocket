@@ -54,6 +54,21 @@ return [
             'engine' => null,
         ],
 
+        'mysql_zuling' => [ //租赁正式环境数据库
+            'driver' => 'mysql',
+            'host' => env('DB_HOST_ZL', '127.0.0.1'),
+            'port' => env('DB_PORT_ZL', '3306'),
+            'database' => env('DB_DATABASE_ZL', 'sa'),
+            'username' => env('DB_USERNAME_ZL', 'homesteas'),
+            'password' => env('DB_PASSWORD_ZL', 'homesteas'),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'host' => env('DB_HOST', '127.0.0.1'),

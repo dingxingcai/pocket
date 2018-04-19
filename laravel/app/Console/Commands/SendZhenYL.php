@@ -41,9 +41,10 @@ class SendZhenYL extends Command
      */
     public function handle()
     {
-        $images = Cache::pull('saleImage');
+//        $images = Cache::pull('saleImage');
+        $image = null;
         if (empty($images)) {
-            $image = '201804171141177565.jpg';
+            $image = '201804182327258936.jpg';
 //            \Log::info('从缓存中没有获取到图片', []);
 //            exit;
         }
