@@ -69,7 +69,7 @@ class ZhengYLQuery extends Query
             $stock = Stock::select('FullName')->where('typeId', $ktypeId)->first();
             $stock = explode('|', $stock->FullName);
             $sto = explode('店', $stock[1]);
-            $info['stock'] = $sto[0].'店';
+            $info['stock'] = $sto[0] . '店';
             //查询仓库的当天销售额
             $dayMoney = DB::connection('sqlsrv')->select("select  sum(TotalMoney) as 'dayMoney'  from billindex
 where  BillType = 305 and  KtypeId = '{$ktypeId}'  and RedWord = 0 and  BillDate = CONVERT(varchar(30),getdate(),23);");
@@ -120,7 +120,11 @@ and BillDate >= '{$date}';");
             $totalTotalMoneys += $totalMoney;
             $info['totalMoney'] = round($totalMoney - $totalRefundMoney, 2);
             $info['target'] = $value['money'];
-            $info['finishedCount'] = round((($totalMoney - $totalRefundMoney) / $value['money']) * 100, 2) . '%';
+            if ($value['money'] == 0) {
+                $info['finishedCount'] = 0;
+            } else {
+                $info['finishedCount'] = round((($totalMoney - $totalRefundMoney) / $value['money']) * 100, 2) . '%';
+            }
 
             $diff = round($totalMoney - (($value['money'] / $totalDays) * $day), 0);
 
