@@ -161,7 +161,7 @@ and BillDate >= '{$date}';");
             $yzMonthMoney = 0;
         }
 
-        $youzanTarget = 200000;
+        $youzanTarget = 500000;
 
         $totalTarget += $youzanTarget;
         $dayTotals += $yzDayMoney;
