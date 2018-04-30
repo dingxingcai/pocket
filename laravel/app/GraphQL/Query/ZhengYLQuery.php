@@ -49,6 +49,8 @@ class ZhengYLQuery extends Query
 
         $totalDays = date('t');                  //当前月总天数
         $date = date('Y-m-1', time());  //每月的开始日期
+        $now = date('Y-m-d H:i:s', time());
+        $now1 = date('Y-m-d 00:00:00', time());
         $day = date('d', time());        //到目前为止的天数
         $finishedCount = 0;                       //达成率
         $diff = 0;                                //速度对比差值
@@ -136,6 +138,37 @@ and BillDate >= '{$date}';");
             $datas[] = $info;
 
         }
+
+
+        //下面统计有赞的销售数据
+        //当天的总金额
+        $yzDayMoney = DB::connection('yz')->select("SELECT SUM(IF(type='PRESENT', price, payment)) AS 'money' FROM fact_youzan_trade WHERE created >= '{$now1}' and `type`='FIXED' 
+;");
+
+        if ($yzDayMoney[0]->money) {
+            $yzDayMoney = $yzDayMoney[0]->money;
+        } else {
+            $yzDayMoney = 0;
+        }
+
+
+        //当月的总金额
+        $yzMonthMoney = DB::connection('yz')->select("SELECT SUM(IF(type='PRESENT', price, payment)) AS 'money' FROM fact_youzan_trade WHERE created BETWEEN {$date} AND '{$now}' and `type`='FIXED' 
+;");
+        if ($yzMonthMoney[0]->money) {
+            $yzMonthMoney = $yzMonthMoney[0]->money;
+        } else {
+            $yzMonthMoney = 0;
+        }
+
+        $youzanTarget = 200000;
+        $yz['stock'] = '有赞商城';
+        $yz['totalMoney'] = $yzMonthMoney;
+        $yz['dayMoney'] = $yzDayMoney;
+        $yz['target'] = $youzanTarget;
+        $yz['finishedCount'] = round(($yzMonthMoney / $youzanTarget) * 100, 2) . '%';
+        $yz['diff'] = round($yzMonthMoney - (($youzanTarget / $totalDays) * $day), 0);
+        $datas[] = $yz;
 
         $total['stock'] = '合计';
         $total['dayMoney'] = round($dayTotals - $dayRefundTotals, 2);
