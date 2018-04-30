@@ -99,6 +99,6 @@ class ZhenYL extends Command
         ];
 
         $result3 = Curl::curl($dingdingUrl, json_encode($dingdingParam), true, true, true);
-        \Log::info('发送郑伊露报表群失败' . $fileName, $result3);
+        \Log::info('发送郑伊露报表群' . $fileName, $result3);
     }
 }
