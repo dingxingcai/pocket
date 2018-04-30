@@ -68,6 +68,21 @@ return [
             'strict' => true,
             'engine' => null,
         ],
+        //有赞数据库
+        'yz' => [ //租赁正式环境数据库
+            'driver' => 'mysql',
+            'host' => env('DB_DC_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT_ZL', '3306'),
+            'database' => env('DB_DC_DATABASE', 'sa'),
+            'username' => env('DB_DC_USERNAME', 'homesteas'),
+            'password' => env('DB_DC_PASSWORD', 'homesteas'),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
 
         'pgsql' => [
             'driver' => 'pgsql',
