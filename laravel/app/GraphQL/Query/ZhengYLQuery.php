@@ -48,8 +48,8 @@ class ZhengYLQuery extends Query
     {
 
         $totalDays = date('t');                  //当前月总天数
-        $date = date('Y-m-1', time());  //每月的开始日期
-        $now = date('Y-m-d H:i:s', time());
+        $date = date('Y-m-01', time());  //每月的开始日期
+        $now = date('Y-m-d H:i:s', time());   //现在的时间
         $now1 = date('Y-m-d 00:00:00', time());
         $day = date('d', time());        //到目前为止的天数
         $finishedCount = 0;                       //达成率
@@ -153,7 +153,7 @@ and BillDate >= '{$date}';");
 
 
         //当月的总金额
-        $yzMonthMoney = DB::connection('yz')->select("SELECT SUM(IF(type='PRESENT', price, payment)) AS 'money' FROM fact_youzan_trade WHERE created BETWEEN {$date} AND '{$now}' and `type`='FIXED' 
+        $yzMonthMoney = DB::connection('yz')->select("SELECT SUM(IF(type='PRESENT', price, payment)) AS 'money' FROM fact_youzan_trade WHERE created BETWEEN '{$date}' AND '{$now}' and `type`='FIXED' 
 ;");
         if ($yzMonthMoney[0]->money) {
             $yzMonthMoney = $yzMonthMoney[0]->money;
