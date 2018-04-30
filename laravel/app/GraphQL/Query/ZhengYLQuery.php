@@ -170,8 +170,10 @@ and BillDate >= '{$date}';");
         $yz['diff'] = round($yzMonthMoney - (($youzanTarget / $totalDays) * $day), 0);
         $datas[] = $yz;
 
-        $totalTarget += $youzanTarget;
-
+//        $totalTarget += $youzanTarget;
+//        $dayTotals += $yzDayMoney;
+//        $totalTotalMoneys += $yzMonthMoney;
+//        $totalDiff += round($yzMonthMoney - (($youzanTarget / $totalDays) * $day), 0);
 
         $total['stock'] = '合计';
         $total['dayMoney'] = round($dayTotals - $dayRefundTotals, 2);
