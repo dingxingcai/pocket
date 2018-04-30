@@ -162,6 +162,12 @@ and BillDate >= '{$date}';");
         }
 
         $youzanTarget = 200000;
+
+        $totalTarget += $youzanTarget;
+        $dayTotals += $yzDayMoney;
+        $totalTotalMoneys += $yzMonthMoney;
+        $totalDiff += round($yzMonthMoney - (($youzanTarget / $totalDays) * $day), 0);
+
         $yz['stock'] = '有赞商城';
         $yz['totalMoney'] = $yzMonthMoney;
         $yz['dayMoney'] = $yzDayMoney;
@@ -169,11 +175,6 @@ and BillDate >= '{$date}';");
         $yz['finishedCount'] = round(($yzMonthMoney / $youzanTarget) * 100, 2) . '%';
         $yz['diff'] = round($yzMonthMoney - (($youzanTarget / $totalDays) * $day), 0);
         $datas[] = $yz;
-
-//        $totalTarget += $youzanTarget;
-//        $dayTotals += $yzDayMoney;
-//        $totalTotalMoneys += $yzMonthMoney;
-//        $totalDiff += round($yzMonthMoney - (($youzanTarget / $totalDays) * $day), 0);
 
         $total['stock'] = '合计';
         $total['dayMoney'] = round($dayTotals - $dayRefundTotals, 2);
