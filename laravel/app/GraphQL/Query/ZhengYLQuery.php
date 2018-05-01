@@ -163,10 +163,19 @@ and BillDate >= '{$date}';");
 
         $youzanTarget = 500000;
 
-        $totalTarget += $youzanTarget;
-        $dayTotals += $yzDayMoney;
-        $totalTotalMoneys += $yzMonthMoney;
-        $totalDiff += round($yzMonthMoney - (($youzanTarget / $totalDays) * $day), 0);
+//        $totalTarget += $youzanTarget;
+//        $dayTotals += $yzDayMoney;
+//        $totalTotalMoneys += $yzMonthMoney;
+//        $totalDiff += round($yzMonthMoney - (($youzanTarget / $totalDays) * $day), 0);
+
+        $total['stock'] = '合计';
+        $total['dayMoney'] = round($dayTotals - $dayRefundTotals, 2);
+        $total['totalMoney'] = round($totalTotalMoneys - $totalRefundMoneys, 2);
+        $total['target'] = $totalTarget;
+        $total['finishedCount'] = round(($totalTotalMoneys / $totalTarget) * 100, 2) . '%';
+        $total['diff'] = $totalDiff;
+        $datas[] = $total;
+
 
         $yz['stock'] = '有赞商城';
         $yz['totalMoney'] = $yzMonthMoney;
@@ -176,13 +185,6 @@ and BillDate >= '{$date}';");
         $yz['diff'] = round($yzMonthMoney - (($youzanTarget / $totalDays) * $day), 0);
         $datas[] = $yz;
 
-        $total['stock'] = '合计';
-        $total['dayMoney'] = round($dayTotals - $dayRefundTotals, 2);
-        $total['totalMoney'] = round($totalTotalMoneys - $totalRefundMoneys, 2);
-        $total['target'] = $totalTarget;
-        $total['finishedCount'] = round(($totalTotalMoneys / $totalTarget) * 100, 2) . '%';
-        $total['diff'] = $totalDiff;
-        $datas[] = $total;
         return $datas;
     }
 }
