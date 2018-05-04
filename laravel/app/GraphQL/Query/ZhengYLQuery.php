@@ -142,7 +142,7 @@ and BillDate >= '{$date}';");
 
         //下面统计有赞的销售数据
         //当天的总金额
-        $yzDayMoney = DB::connection('yz')->select("SELECT SUM(IF(type='PRESENT', price, payment)) AS 'money' FROM fact_youzan_trade WHERE created >= '{$now1}' and `type`='FIXED' 
+        $yzDayMoney = DB::connection('yz')->select("SELECT SUM(IF(type='PRESENT', price, payment)) AS 'money' FROM fact_youzan_trade WHERE pay_time >= '{$now1}' and `type`='FIXED' 
 ;");
 
         if ($yzDayMoney[0]->money) {
@@ -153,7 +153,7 @@ and BillDate >= '{$date}';");
 
 
         //当月的总金额
-        $yzMonthMoney = DB::connection('yz')->select("SELECT SUM(IF(type='PRESENT', price, payment)) AS 'money' FROM fact_youzan_trade WHERE created BETWEEN '{$date}' AND '{$now}' and `type`='FIXED' 
+        $yzMonthMoney = DB::connection('yz')->select("SELECT SUM(IF(type='PRESENT', price, payment)) AS 'money' FROM fact_youzan_trade WHERE pay_time BETWEEN '{$date}' AND '{$now}' and `type`='FIXED' 
 ;");
         if ($yzMonthMoney[0]->money) {
             $yzMonthMoney = $yzMonthMoney[0]->money;
@@ -163,10 +163,6 @@ and BillDate >= '{$date}';");
 
         $youzanTarget = 500000;
 
-//        $totalTarget += $youzanTarget;
-//        $dayTotals += $yzDayMoney;
-//        $totalTotalMoneys += $yzMonthMoney;
-//        $totalDiff += round($yzMonthMoney - (($youzanTarget / $totalDays) * $day), 0);
 
         $total['stock'] = '合计';
         $total['dayMoney'] = round($dayTotals - $dayRefundTotals, 2);
