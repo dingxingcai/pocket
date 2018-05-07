@@ -47,7 +47,7 @@ class BrandMouthQuery extends Query
     {
 
 
-        $date = date('Y-m-1',time());
+        $date = date('Y-m-1', time());
 
         //一个月的销售额占比，统计的是到目前为止的
         $brands = DB::connection('sqlsrv')->select("select  p.ParID,sum(r.total) as  'money'
@@ -60,13 +60,29 @@ and b.BillDate >= '{$date}' group by p.ParID;");
         $totalMoney = DB::connection('sqlsrv')->select("select  sum(TotalInMoney) as 'totalMoney'  from billindex 
 where  BillType = 305 and RedWord = 0 and  BillDate <= CONVERT(varchar(30),getdate(),23)
 and BillDate >= '{$date}';");
+        if ($totalMoney[0]->totalMoney) {
+            $totalMoney = $totalMoney[0]->totalMoney;
+        } else {
+            $totalMoney = 0;
+        }
+
+
+        //统计总计的退货单总额，要减掉总的退货单额
+        $totalRefundMoney = DB::connection('sqlsrv')->select("select  sum(TotalInMoney) as 'totalMoney'  from billindex 
+where  BillType = 215 and RedWord = 0 and  BillDate <= CONVERT(varchar(30),getdate(),23)
+and BillDate >= '{$date}';");
+        if ($totalRefundMoney[0]->totalMoney) {
+            $refund = $totalRefundMoney[0]->totalMoney;
+        } else {
+            $refund = 0;
+        }
 
         foreach ($brands as &$brand) {
             $ptype = Ptype::select('FullName')->where('typeId', $brand->ParID)->first();
             $brand->name = $ptype->FullName;
-            $brand->count = Helper::getNum($brand->money, $totalMoney[0]->totalMoney);
-
+            $brand->count = Helper::getNum($brand->money, $totalMoney - $refund);
         }
+
 
         return $brands;
 

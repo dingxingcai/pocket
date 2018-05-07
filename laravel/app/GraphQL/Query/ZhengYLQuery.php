@@ -83,18 +83,18 @@ where  BillType = 305 and  KtypeId = '{$ktypeId}'  and RedWord = 0 and  BillDate
 
 
             //查询仓库的当天零售退货单
-            $dayRegundMoney = DB::connection('sqlsrv')->select("select  sum(TotalMoney) as 'dayMoney'  from billindex
+            $dayRefundMoney = DB::connection('sqlsrv')->select("select  sum(TotalMoney) as 'dayMoney'  from billindex
 where  BillType = 215 and  KtypeId = '{$ktypeId}' and RedWord = 0   and BillDate = CONVERT(varchar(30),getdate(),23);");
-            if ($dayRegundMoney[0]->dayMoney) {
-                $dayRegundMoney = $dayRegundMoney[0]->dayMoney;
+            if ($dayRefundMoney[0]->dayMoney) {
+                $dayRefundMoney = $dayRefundMoney[0]->dayMoney;
             } else {
-                $dayRegundMoney = 0;
+                $dayRefundMoney = 0;
             }
-            $dayRefundTotals += $dayRegundMoney;
+            $dayRefundTotals += $dayRefundMoney;
 
             $dayTotals += $dayMoney;
 
-            $info['dayMoney'] = round($dayMoney - $dayRegundMoney, 2);
+            $info['dayMoney'] = round($dayMoney - $dayRefundMoney, 2);
 
 
             //获取本月到目前为止的总销售额
@@ -139,18 +139,26 @@ and BillDate >= '{$date}';");
 
         }
 
+        $total['stock'] = '合计';
+        $total['dayMoney'] = round($dayTotals - $dayRefundTotals, 2);
+        $total['totalMoney'] = round($totalTotalMoneys - $totalRefundMoneys, 2);
+        $total['target'] = $totalTarget;
+        $total['finishedCount'] = round(($totalTotalMoneys / $totalTarget) * 100, 2) . '%';
+        $total['diff'] = $totalDiff;
+        $datas[] = $total;
+
+
+
 
         //下面统计有赞的销售数据
         //当天的总金额
         $yzDayMoney = DB::connection('yz')->select("SELECT SUM(total_fee) AS 'money' FROM fact_youzan_trade WHERE pay_time >= '{$now1}' and `type`='FIXED' 
 ;");
-
         if ($yzDayMoney[0]->money) {
             $yzDayMoney = $yzDayMoney[0]->money;
         } else {
             $yzDayMoney = 0;
         }
-
 
         //当月的总金额
         $yzMonthMoney = DB::connection('yz')->select("SELECT SUM(total_fee) AS 'money' FROM fact_youzan_trade WHERE pay_time BETWEEN '{$date}' AND '{$now}' and `type`='FIXED' 
@@ -160,18 +168,7 @@ and BillDate >= '{$date}';");
         } else {
             $yzMonthMoney = 0;
         }
-
         $youzanTarget = 500000;
-
-
-        $total['stock'] = '合计';
-        $total['dayMoney'] = round($dayTotals - $dayRefundTotals, 2);
-        $total['totalMoney'] = round($totalTotalMoneys - $totalRefundMoneys, 2);
-        $total['target'] = $totalTarget;
-        $total['finishedCount'] = round(($totalTotalMoneys / $totalTarget) * 100, 2) . '%';
-        $total['diff'] = $totalDiff;
-        $datas[] = $total;
-
 
         $yz['stock'] = '有赞商城';
         $yz['totalMoney'] = $yzMonthMoney;

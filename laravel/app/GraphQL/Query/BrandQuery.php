@@ -59,8 +59,8 @@ where  BillType = 305 and RedWord = 0 and  BillDate = CONVERT(varchar(30),getdat
             $ptype = Ptype::select('FullName')->where('typeId', $brand->ParID)->first();
             $brand->name = $ptype->FullName;
             $brand->count = Helper::getNum($brand->money, $totalMoney[0]->totalMoney);
-
         }
+
 
         return $brands;
 
