@@ -74,7 +74,7 @@ class ZhengYLQuery extends Query
             $info['stock'] = $sto[0] . '店';
             //查询仓库的当天销售额
             $dayMoney = DB::connection('sqlsrv')->select("select  sum(TotalMoney) as 'dayMoney'  from billindex
-where  BillType = 305 and  KtypeId = '{$ktypeId}'  and RedWord = 0 and  BillDate = CONVERT(varchar(30),getdate(),23);");
+where  BillType = 305 and  KtypeId = '{$ktypeId}'  and RedWord = 0 AND draft = 0 and  BillDate = CONVERT(varchar(30),getdate(),23);");
             if ($dayMoney[0]->dayMoney) {
                 $dayMoney = $dayMoney[0]->dayMoney;
             } else {
@@ -84,7 +84,7 @@ where  BillType = 305 and  KtypeId = '{$ktypeId}'  and RedWord = 0 and  BillDate
 
             //查询仓库的当天零售退货单
             $dayRefundMoney = DB::connection('sqlsrv')->select("select  sum(TotalMoney) as 'dayMoney'  from billindex
-where  BillType = 215 and  KtypeId = '{$ktypeId}' and RedWord = 0   and BillDate = CONVERT(varchar(30),getdate(),23);");
+where  BillType = 215 and  KtypeId = '{$ktypeId}' and RedWord = 0  AND draft = 0  and BillDate = CONVERT(varchar(30),getdate(),23);");
             if ($dayRefundMoney[0]->dayMoney) {
                 $dayRefundMoney = $dayRefundMoney[0]->dayMoney;
             } else {
@@ -98,8 +98,8 @@ where  BillType = 215 and  KtypeId = '{$ktypeId}' and RedWord = 0   and BillDate
 
 
             //获取本月到目前为止的总销售额
-            $totalMoney = DB::connection('sqlsrv')->select("select  sum(TotalMoney) as 'totalMoney'  from billindex 
-where  BillType = 305  and  KtypeId = '{$ktypeId}' and RedWord = 0   and  BillDate <= CONVERT(varchar(30),getdate(),23)
+            $totalMoney = DB::connection('sqlsrv')->select("select  sum(TotalMoney) as 'totalMoney'  from billindex
+where  BillType = 305  and  KtypeId = '{$ktypeId}' and RedWord = 0 AND draft = 0   and  BillDate <= CONVERT(varchar(30),getdate(),23)
 and BillDate >= '{$date}';");
             if ($totalMoney[0]->totalMoney) {
                 $totalMoney = $totalMoney[0]->totalMoney;
@@ -109,8 +109,8 @@ and BillDate >= '{$date}';");
 
 
             //获取本月到目前为止的总零售单退货金额
-            $totalRefundMoney = DB::connection('sqlsrv')->select("select  sum(TotalMoney) as 'totalMoney'  from billindex 
-where  BillType = 215 and RedWord = 0 and KtypeId = '{$ktypeId}'  and BillDate <= CONVERT(varchar(30),getdate(),23)
+            $totalRefundMoney = DB::connection('sqlsrv')->select("select  sum(TotalMoney) as 'totalMoney'  from billindex
+where  BillType = 215 and RedWord = 0 and KtypeId = '{$ktypeId}' AND draft = 0  and BillDate <= CONVERT(varchar(30),getdate(),23)
 and BillDate >= '{$date}';");
             if ($totalRefundMoney[0]->totalMoney) {
                 $totalRefundMoney = $totalRefundMoney[0]->totalMoney;
@@ -148,11 +148,9 @@ and BillDate >= '{$date}';");
         $datas[] = $total;
 
 
-
-
         //下面统计有赞的销售数据
         //当天的总金额
-        $yzDayMoney = DB::connection('yz')->select("SELECT SUM(total_fee) AS 'money' FROM fact_youzan_trade WHERE pay_time >= '{$now1}' and `type`='FIXED' 
+        $yzDayMoney = DB::connection('dc')->select("SELECT SUM(total_fee) AS 'money' FROM fact_youzan_trade WHERE pay_time >= '{$now1}' and `type`='FIXED'
 ;");
         if ($yzDayMoney[0]->money) {
             $yzDayMoney = $yzDayMoney[0]->money;
@@ -161,7 +159,7 @@ and BillDate >= '{$date}';");
         }
 
         //当月的总金额
-        $yzMonthMoney = DB::connection('yz')->select("SELECT SUM(total_fee) AS 'money' FROM fact_youzan_trade WHERE pay_time BETWEEN '{$date}' AND '{$now}' and `type`='FIXED' 
+        $yzMonthMoney = DB::connection('dc')->select("SELECT SUM(total_fee) AS 'money' FROM fact_youzan_trade WHERE pay_time BETWEEN '{$date}' AND '{$now}' and `type`='FIXED'
 ;");
         if ($yzMonthMoney[0]->money) {
             $yzMonthMoney = $yzMonthMoney[0]->money;
@@ -179,5 +177,123 @@ and BillDate >= '{$date}';");
         $datas[] = $yz;
 
         return $datas;
+
+
+        //*******************从订单中心获取数据********************************
+//        $datas = [];
+//        //获取月目标
+//        $ktypeIds = Helper::getMonthTarGet();
+//        foreach ($ktypeIds as $ktypeId => $value) {
+//
+//            //查询仓库名称
+//            $stock = Stock::select('FullName')->where('typeId', $ktypeId)->first();
+//            $stock = explode('|', $stock->FullName);
+//            $sto = explode('店', $stock[1]);
+//            $info['stock'] = $sto[0] . '店';
+//            //查询仓库的当天销售额
+//            $dayMoney = DB::connection('mysql')->select("select  sum(TotalMoney) as 'dayMoney'  from billindex
+//where  BillType = 305 and  KtypeId = '{$ktypeId}'  and RedWord = 0 and  BillDate = CURRENT_DATE ;");
+//            if ($dayMoney[0]->dayMoney) {
+//                $dayMoney = $dayMoney[0]->dayMoney;
+//            } else {
+//                $dayMoney = 0;
+//            }
+//
+//
+//            //查询仓库的当天零售退货单
+//            $dayRefundMoney = DB::connection('mysql')->select("select  sum(TotalMoney) as 'dayMoney'  from billindex
+//where  BillType = 215 and  KtypeId = '{$ktypeId}' and RedWord = 0   and BillDate = CURRENT_DATE;");
+//            if ($dayRefundMoney[0]->dayMoney) {
+//                $dayRefundMoney = $dayRefundMoney[0]->dayMoney;
+//            } else {
+//                $dayRefundMoney = 0;
+//            }
+//            $dayRefundTotals += $dayRefundMoney;
+//
+//            $dayTotals += $dayMoney;
+//
+//            $info['dayMoney'] = round($dayMoney - $dayRefundMoney, 2);
+//
+//
+//            //获取本月到目前为止的总销售额
+//            $totalMoney = DB::connection('mysql')->select("select  sum(TotalMoney) as 'totalMoney'  from billindex
+//where  BillType = 305  and  KtypeId = '{$ktypeId}' and RedWord = 0   and  BillDate <= NOW()
+//and BillDate >= '{$date}';");
+//            if ($totalMoney[0]->totalMoney) {
+//                $totalMoney = $totalMoney[0]->totalMoney;
+//            } else {
+//                $totalMoney = 0;
+//            }
+//
+//
+//            //获取本月到目前为止的总零售单退货金额
+//            $totalRefundMoney = DB::connection('mysql')->select("select  sum(TotalMoney) as 'totalMoney'  from billindex
+//where  BillType = 215 and RedWord = 0 and KtypeId = '{$ktypeId}'  and BillDate <= NOW()
+//and BillDate >= '{$date}';");
+//            if ($totalRefundMoney[0]->totalMoney) {
+//                $totalRefundMoney = $totalRefundMoney[0]->totalMoney;
+//            } else {
+//                $totalRefundMoney = 0;
+//            }
+//            $totalRefundMoneys += $totalRefundMoney;
+//
+//            $totalTotalMoneys += $totalMoney;
+//            $info['totalMoney'] = round($totalMoney - $totalRefundMoney, 2);
+//            $info['target'] = $value['money'];
+//            if ($value['money'] == 0) {
+//                $info['finishedCount'] = 0;
+//            } else {
+//                $info['finishedCount'] = round((($totalMoney - $totalRefundMoney) / $value['money']) * 100, 2) . '%';
+//            }
+//
+//            $diff = round($totalMoney - (($value['money'] / $totalDays) * $day), 0);
+//
+//            $totalDiff += $diff;
+//            $totalTarget += $value['money'];
+//
+//            $info['diff'] = $diff;
+//            $info['title'] = date('Y-m-d H:i:s') . '门店销售统计数据';
+//            $datas[] = $info;
+//
+//        }
+//
+//        $total['stock'] = '合计';
+//        $total['dayMoney'] = round($dayTotals - $dayRefundTotals, 2);
+//        $total['totalMoney'] = round($totalTotalMoneys - $totalRefundMoneys, 2);
+//        $total['target'] = $totalTarget;
+//        $total['finishedCount'] = round(($totalTotalMoneys / $totalTarget) * 100, 2) . '%';
+//        $total['diff'] = $totalDiff;
+//        $datas[] = $total;
+//
+//
+//        //下面统计有赞的销售数据
+//        //当天的总金额
+//        $yzDayMoney = DB::connection('dc')->select("SELECT SUM(total_fee) AS 'money' FROM fact_youzan_trade WHERE pay_time >= '{$now1}' and `type`='FIXED'
+//;");
+//        if ($yzDayMoney[0]->money) {
+//            $yzDayMoney = $yzDayMoney[0]->money;
+//        } else {
+//            $yzDayMoney = 0;
+//        }
+//
+//        //当月的总金额
+//        $yzMonthMoney = DB::connection('dc')->select("SELECT SUM(total_fee) AS 'money' FROM fact_youzan_trade WHERE pay_time BETWEEN '{$date}' AND '{$now}' and `type`='FIXED'
+//;");
+//        if ($yzMonthMoney[0]->money) {
+//            $yzMonthMoney = $yzMonthMoney[0]->money;
+//        } else {
+//            $yzMonthMoney = 0;
+//        }
+//        $youzanTarget = 500000;
+//
+//        $yz['stock'] = '有赞商城';
+//        $yz['totalMoney'] = $yzMonthMoney;
+//        $yz['dayMoney'] = $yzDayMoney;
+//        $yz['target'] = $youzanTarget;
+//        $yz['finishedCount'] = round(($yzMonthMoney / $youzanTarget) * 100, 2) . '%';
+//        $yz['diff'] = round($yzMonthMoney - (($youzanTarget / $totalDays) * $day), 0);
+//        $datas[] = $yz;
+//
+//        return $datas;
     }
 }

@@ -68,8 +68,8 @@ return [
             'strict' => true,
             'engine' => null,
         ],
-        //有赞数据库
-        'yz' => [ //租赁正式环境数据库
+        //有赞数据库 租赁正式环境数据库
+        'dc' => [
             'driver' => 'mysql',
             'host' => env('DB_DC_HOST', '127.0.0.1'),
             'port' => env('DB_PORT_ZL', '3306'),
