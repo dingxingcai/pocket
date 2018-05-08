@@ -46,57 +46,57 @@ class BrandQuery extends Query
     public function resolve($root, $args)
     {
 
-//        //统计销售额  (当天的)
-//        $brands = DB::connection('sqlsrv')->select("select CONVERT(varchar(10), b.billdate, 23) as 'date', p.ParID,sum(r.total) as  'money'
-//from billindex b left join retailBill r on b.BillNumberID = r.BillNumberID inner join ptype p on p.typeId = r.PtypeId
-//where  b.BillType = 305 and b.redword = 0 and  b.BillDate = CONVERT(varchar(30),getdate(),23)  group by p.ParID,b.BillDate;");
-//
-//        //统计总计的销售额
-//        $totalMoney = DB::connection('sqlsrv')->select("select  sum(TotalInMoney) as 'totalMoney'  from billindex
-//where  BillType = 305 and RedWord = 0 and  BillDate = CONVERT(varchar(30),getdate(),23);");
-//
-//        foreach ($brands as &$brand) {
-//            $ptype = Ptype::select('FullName')->where('typeId', $brand->ParID)->first();
-//            $brand->name = $ptype->FullName;
-//            $brand->count = Helper::getNum($brand->money, $totalMoney[0]->totalMoney);
-//        }
-//
-//        return $brands;
+        //统计销售额  (当天的)
+        $brands = DB::connection('sqlsrv')->select("select CONVERT(varchar(10), b.billdate, 23) as 'date', p.ParID,sum(r.total) as  'money'
+from billindex b left join retailBill r on b.BillNumberID = r.BillNumberID inner join ptype p on p.typeId = r.PtypeId
+where  b.BillType = 305 and b.redword = 0 and  b.BillDate = CONVERT(varchar(30),getdate(),23)  group by p.ParID,b.BillDate;");
 
-
-        //从订单中心获取
-        $brands = DB::connection()->select("select d.category as 'name',sum(r.total) as 'money',
-DATE_FORMAT(b.BillDate,'%Y-%m-%d') as 'date' from BillIndex b 
-left join retailBill r on r.BillNumberId = b.BillNumberId
-left join dim_sku d on d.sku_id = r.PtypeId
-where b.BillType = 305 and 
-d.category is not NULL and
-b.BillDate = CURRENT_DATE
-group by d.category,b.BillDate;");
-
-        //统计当天总计的销售额
-        $totalMoney = DB::connection()->select("select  sum(TotalMoney) as 'totalMoney'  from billindex
-where  BillType = 305 and RedWord = 0 and  BillDate =CURRENT_DATE ;");
-        if ($totalMoney[0]->totalMoney) {
-            $totalMoney = $totalMoney[0]->totalMoney;
-        } else {
-            $totalMoney = 0;
-        }
-
-        //统计当天总计的退货销售额
-        $totalRefundMoney = DB::connection()->select("select  sum(TotalMoney) as 'totalRefundMoney'  from billindex
-where  BillType = 215 and RedWord = 0 and  BillDate =CURRENT_DATE");
-        if ($totalRefundMoney[0]->totalRefundMoney) {
-            $totalRefundMoney = $totalRefundMoney[0]->totalRefundMoney;
-        } else {
-            $totalRefundMoney = 0;
-        }
+        //统计总计的销售额
+        $totalMoney = DB::connection('sqlsrv')->select("select  sum(TotalInMoney) as 'totalMoney'  from billindex
+where  BillType = 305 and RedWord = 0 and  BillDate = CONVERT(varchar(30),getdate(),23);");
 
         foreach ($brands as &$brand) {
-            $brand->count = Helper::getNum($brand->money, ($totalMoney - $totalRefundMoney));
+            $ptype = Ptype::select('FullName')->where('typeId', $brand->ParID)->first();
+            $brand->name = $ptype->FullName;
+            $brand->count = Helper::getNum($brand->money, $totalMoney[0]->totalMoney);
         }
 
         return $brands;
+
+
+        //从订单中心获取*****************************************************
+//        $brands = DB::connection()->select("select d.category as 'name',sum(r.total) as 'money',
+//DATE_FORMAT(b.BillDate,'%Y-%m-%d') as 'date' from BillIndex b
+//left join retailBill r on r.BillNumberId = b.BillNumberId
+//left join dim_sku d on d.sku_id = r.PtypeId
+//where b.BillType = 305 and
+//d.category is not NULL and
+//b.BillDate = CURRENT_DATE
+//group by d.category,b.BillDate;");
+//
+//        //统计当天总计的销售额
+//        $totalMoney = DB::connection()->select("select  sum(TotalMoney) as 'totalMoney'  from billindex
+//where  BillType = 305 and RedWord = 0 and  BillDate =CURRENT_DATE ;");
+//        if ($totalMoney[0]->totalMoney) {
+//            $totalMoney = $totalMoney[0]->totalMoney;
+//        } else {
+//            $totalMoney = 0;
+//        }
+//
+//        //统计当天总计的退货销售额
+//        $totalRefundMoney = DB::connection()->select("select  sum(TotalMoney) as 'totalRefundMoney'  from billindex
+//where  BillType = 215 and RedWord = 0 and  BillDate =CURRENT_DATE");
+//        if ($totalRefundMoney[0]->totalRefundMoney) {
+//            $totalRefundMoney = $totalRefundMoney[0]->totalRefundMoney;
+//        } else {
+//            $totalRefundMoney = 0;
+//        }
+//
+//        foreach ($brands as &$brand) {
+//            $brand->count = Helper::getNum($brand->money, ($totalMoney - $totalRefundMoney));
+//        }
+//
+//        return $brands;
 
     }
 }
