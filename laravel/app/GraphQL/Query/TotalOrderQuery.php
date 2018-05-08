@@ -53,5 +53,18 @@ SUM( CASE WHEN VipCardID=-1 THEN 1 ELSE 0 END) as 'notVipOrders'  from
 and BillDate < CONVERT(varchar(30),getdate(),23) and RedWord=0   group by BillDate order by billdate desc;");
 
         return $totalOrder;
+
+
+        //取用订单中心数据
+//        $totalOrder = DB::connection('mysql')->select("select  DATE_FORMAT(BillDate,'%Y-%m-%d') as 'date' ,
+//count(*) as 'totalOrders',
+//SUM( CASE WHEN VipCardID!=-1 THEN 1 ELSE 0 END) as 'vipOrders' ,
+//SUM( CASE WHEN VipCardID=-1 THEN 1 ELSE 0 END) as 'notVipOrders'
+//from
+// BillIndex  where billtype = 305
+//and BillDate <= date_sub(curdate(),interval 1 day)
+//and RedWord=0
+//group by BillDate order by BillDate desc limit 7 ;");
+//        return $totalOrder;
     }
 }

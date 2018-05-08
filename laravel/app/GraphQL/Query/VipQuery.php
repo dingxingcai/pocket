@@ -48,7 +48,7 @@ class VipQuery extends Query
         $vips = DB::connection('sqlsrv')->select("select top 7 CONVERT(varchar(10), CreateDate, 23) as 'date', count(*) as 'vipNums' from nVipCardSign where createDate < CONVERT(varchar(30),getdate(),23)  GROUP BY CreateDate order by CreateDate desc;");
 
         //统计有消费行为的会员数量
-        $buyVips = DB::connection('sqlsrv')->select("select count(t.total) as buyNums from (select n.VipCardID ,count(n.VipCardID) as total from nVipCardSign n left join BillIndex b on 
+        $buyVips = DB::connection('sqlsrv')->select("select count(t.total) as buyNums from (select n.VipCardID ,count(n.VipCardID) as total from nVipCardSign n left join BillIndex b on
 n.VipCardID = b.VipCardID where b.VipCardID != -1  group by n.VipCardID) t;");
         $buys = [
             'date' => '有消费行为会员数',
@@ -65,5 +65,39 @@ n.VipCardID = b.VipCardID where b.VipCardID != -1  group by n.VipCardID) t;");
         $vips[] = $info;
 
         return $vips;
+
+
+
+
+        //从订单中心获取数据
+
+//        $vips = DB::connection('mysql')->select("select
+//CreateDate as 'date',
+//count(*) as 'vipNums'
+//from dim_vip
+//where createDate <= date_sub(curdate(),interval 1 day)
+//GROUP BY CreateDate order by CreateDate desc limit 7 ;");
+//
+//        //统计有消费行为的会员数量
+//        $buyVips = DB::connection('mysql')->select("select count(t.total) as buyNums from (select n.VipCardID ,count(n.VipCardID) as total from dim_vip n left join BillIndex b on
+//n.VipCardID = b.VipCardID where b.VipCardID != -1  group by n.VipCardID) t;");
+//        $buys = [
+//            'date' => '有消费行为会员数',
+//            'vipNums' => $buyVips[0]->buyNums
+//        ];
+//        $vips[] = $buys;
+//
+//        //统计总计的会员数量
+//        $total = DB::connection()->select("select count(*) as num from dim_vip");
+//
+//        $info = [
+//            'date' => '总计会员数',
+//            'vipNums' => $total[0]->num
+//        ];
+//
+//        $vips[] = $info;
+//        return $vips;
+
+
     }
 }
