@@ -69,7 +69,7 @@ n.VipCardID = b.VipCardID where b.VipCardID != -1  group by n.VipCardID) t;");
 
 
 
-        //从订单中心获取数据
+        //从订单中心获取数据*******************************************
 
 //        $vips = DB::connection('mysql')->select("select
 //CreateDate as 'date',
