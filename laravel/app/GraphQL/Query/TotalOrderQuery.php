@@ -50,7 +50,7 @@ class TotalOrderQuery extends Query
 SUM( CASE WHEN VipCardID!=-1 THEN 1 ELSE 0 END) as 'vipOrders' ,
 SUM( CASE WHEN VipCardID=-1 THEN 1 ELSE 0 END) as 'notVipOrders'  from
  BillIndex  where billtype = 305 and  datediff(dd,BillDate,getdate()) <= 7
-and BillDate < CONVERT(varchar(30),getdate(),23) and RedWord=0   group by BillDate order by billdate desc;");
+and BillDate < CONVERT(varchar(30),getdate(),23) and RedWord=0 and draft = 0   group by BillDate order by billdate desc;");
 
         return $totalOrder;
 
