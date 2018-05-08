@@ -21,3 +21,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('/test',function(){
     echo "88888";
 });
+
+//eee
