@@ -53,7 +53,7 @@ class BrandMouthQuery extends Query
         $brands = DB::connection('sqlsrv')->select("select  p.ParID,sum(r.total) as  'money'
 from billindex b left join retailBill r on b.BillNumberID = r.BillNumberID inner join ptype p on
 p.typeId = r.PtypeId
-where  b.BillType = 305 and b.redword = 0 and draft = 0 and  b.BillDate <= CONVERT(varchar(30),getdate(),23)
+where  b.BillType = 305 and b.redword = 0 and b.draft = 0 and  b.BillDate <= CONVERT(varchar(30),getdate(),23)
 and b.BillDate >= '{$date}' group by p.ParID;");
 
         //统计总计的销售额

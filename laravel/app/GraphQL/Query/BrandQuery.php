@@ -53,7 +53,7 @@ where  b.BillType = 305 and b.redword = 0 and draft = 0 and  b.BillDate = CONVER
 
         //统计总计的销售额
         $totalMoney = DB::connection('sqlsrv')->select("select  sum(TotalInMoney) as 'totalMoney'  from billindex
-where  BillType = 305 and RedWord = 0 and draft = 0  BillDate = CONVERT(varchar(30),getdate(),23);");
+where  BillType = 305 and RedWord = 0 and draft = 0 and  BillDate = CONVERT(varchar(30),getdate(),23);");
 
         foreach ($brands as &$brand) {
             $ptype = Ptype::select('FullName')->where('typeId', $brand->ParID)->first();
